@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "../../../../Projects/rovr"
+	},
+	{
+		"name": "ROVR",
+		"path": "."
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "ROVR"
+  }
+}

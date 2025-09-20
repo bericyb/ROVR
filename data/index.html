@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0px;
+			padding: 20px;
+			font-family: 'Orbitron', monospace;
+			background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #3a3a3a 100%);
+			color: #e0e0e0;
+			min-height: 100vh;
+			overflow: hidden;
+		}
+
+		.header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.title {
+			font-size: 3.5rem;
+			font-weight: 900;
+			letter-spacing: 8px;
+			color: #ffffff;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+			margin: 0;
+		}
+
+		.controls-container {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			height: calc(100vh - 150px);
+		}
+
+		.joystick-section {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#joy1Div {
+			width: 250px;
+			height: 250px;
+			border: 2px solid #4a90e2;
+			border-radius: 50%;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+			background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);
+		}
+
+		.info-panel {
+			width: 300px;
+			padding: 20px;
+			background: rgba(0, 0, 0, 0.6);
+			border: 1px solid #4a90e2;
+			border-radius: 10px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			backdrop-filter: blur(10px);
+		}
+
+		.speed-control {
+			margin-bottom: 30px;
+		}
+
+		.speed-label {
+			display: block;
+			font-size: 1.2rem;
+			font-weight: 700;
+			margin-bottom: 10px;
+			color: #4a90e2;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+		}
+
+		.speed-select {
+			width: 100%;
+			padding: 12px;
+			font-family: 'Orbitron', monospace;
+			font-size: 1rem;
+			font-weight: 700;
+			background: rgba(0, 0, 0, 0.8);
+			color: #e0e0e0;
+			border: 2px solid #4a90e2;
+			border-radius: 5px;
+			outline: none;
+			cursor: pointer;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		.speed-select:hover {
+			border-color: #6bb6ff;
+			background: rgba(74, 144, 226, 0.1);
+		}
+
+		.speed-select option {
+			background: #000;
+			color: #e0e0e0;
+			font-weight: 700;
+		}
+
+		.telemetry {
+			margin-top: 20px;
+		}
+
+		.telemetry-title {
+			font-size: 1.1rem;
+			font-weight: 700;
+			margin-bottom: 15px;
+			color: #4a90e2;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			border-bottom: 1px solid #4a90e2;
+			padding-bottom: 5px;
+		}
+
+		.data-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.data-label {
+			font-weight: 700;
+			color: #4a90e2;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		.data-input {
+			width: 80px;
+			padding: 5px 8px;
+			font-family: 'Orbitron', monospace;
+			font-size: 0.9rem;
+			font-weight: 700;
+			background: rgba(0, 0, 0, 0.8);
+			color: #e0e0e0;
+			border: 1px solid #4a90e2;
+			border-radius: 3px;
+			text-align: center;
+			outline: none;
+		}
+
+		.connection-status {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			padding: 8px 15px;
+			font-size: 0.8rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			border-radius: 20px;
+			border: 1px solid;
+		}
+
+		.connected {
+			background: rgba(74, 144, 226, 0.2);
+			color: #4a90e2;
+			border-color: #4a90e2;
+			box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+		}
+
+		.disconnected {
+			background: rgba(255, 0, 0, 0.2);
+			color: #ff0000;
+			border-color: #ff0000;
+			box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+		}
+	</style>
+	<title>ROVR</title>
+	<script src="joy.js"> </script>
+</head>
+
+<body>
+	<div class="connection-status disconnected" id="connectionStatus">DISCONNECTED</div>
+	
+	<div class="header">
+		<h1 class="title">ROVR</h1>
+	</div>
+
+	<div class="controls-container">
+		<div class="info-panel">
+			<div class="speed-control">
+				<label class="speed-label" for="speedMode">Speed Mode</label>
+				<select class="speed-select" id="speedMode">
+					<option value="0" selected>Slow</option>
+					<option value="1">Normal</option>
+					<option value="2">Ludicrous</option>
+				</select>
+			</div>
+
+			<div class="telemetry">
+				<div class="telemetry-title">Telemetry</div>
+				<div class="data-row">
+					<span class="data-label">X:</span>
+					<input class="data-input" id="joy1X" type="text" readonly />
+				</div>
+				<div class="data-row">
+					<span class="data-label">Y:</span>
+					<input class="data-input" id="joy1Y" type="text" readonly />
+				</div>
+				<div class="data-row">
+					<span class="data-label">Right:</span>
+					<input class="data-input" id="r" type="text" readonly />
+				</div>
+				<div class="data-row">
+					<span class="data-label">Left:</span>
+					<input class="data-input" id="l" type="text" readonly />
+				</div>
+			</div>
+		</div>
+
+		<div class="joystick-section">
+			<div id="joy1Div"></div>
+		</div>
+	</div>
+</body>
+
+<script>
+	// WebSocket connection to the ESP32 access point
+	var ws = new WebSocket("ws://" + window.location.hostname + "/ws");
+	var connectionStatus = document.getElementById("connectionStatus");
+	
+	ws.onopen = function () {
+		console.log("[WS_CLIENT] Connection established at " + new Date().toISOString());
+		connectionStatus.textContent = "CONNECTED";
+		connectionStatus.className = "connection-status connected";
+	};
+	
+	ws.onmessage = function (event) {
+		var timestamp = new Date().toISOString();
+		console.log("[WS_CLIENT_RX] " + timestamp + " - Raw message:", event.data);
+		
+		// Try to parse if it's JSON
+		try {
+			var parsedData = JSON.parse(event.data);
+			console.log("[WS_CLIENT_PARSED] " + timestamp + " - Parsed data:", parsedData);
+		} catch (e) {
+			console.log("[WS_CLIENT_TEXT] " + timestamp + " - Text message:", event.data);
+		}
+	};
+	
+	ws.onclose = function () {
+		console.log("[WS_CLIENT] Connection closed at " + new Date().toISOString());
+		connectionStatus.textContent = "DISCONNECTED";
+		connectionStatus.className = "connection-status disconnected";
+	};
+	
+	ws.onerror = function (error) {
+		console.error("[WS_CLIENT_ERROR] " + new Date().toISOString() + " - Error:", error);
+		connectionStatus.textContent = "ERROR";
+		connectionStatus.className = "connection-status disconnected";
+	};
+
+	// Create JoyStick object into the DIV 'joy1Div'
+	var Joy1 = new JoyStick('joy1Div');
+
+	var joy1X = document.getElementById("joy1X");
+	var joy1Y = document.getElementById("joy1Y");
+	var r = document.getElementById("r");
+	var l = document.getElementById("l");
+	var speedMode = document.getElementById("speedMode");
+
+	setInterval(function () {
+		joy1X.value = Joy1.GetX();
+		joy1Y.value = Joy1.GetY();
+		var xMag = (Joy1.GetX() / 100) * 255;
+		var yMag = (Joy1.GetY() / 100) * 255;
+
+		var rout = yMag + xMag;
+		var lout = yMag - xMag;
+
+		x = rout > 255 ? 255 : Math.floor(rout) < -255 ? -255 : Math.floor(rout);
+		y = lout > 255 ? 255 : Math.floor(lout) < -255 ? -255 : Math.floor(lout);
+		
+		r.value = x;
+		l.value = y;
+		
+		try {
+			if (ws.readyState == WebSocket.OPEN) {
+				var message = JSON.stringify({
+					"r": x,
+					"l": y,
+					"mode": parseInt(speedMode.value),
+				});
+				console.log("[WS_CLIENT_TX] " + new Date().toISOString() + " - Sending:", message);
+				ws.send(message);
+			}
+		} catch (e) {
+			console.error("[WS_CLIENT_ERROR] " + new Date().toISOString() + " - Send error:", e);
+			// display an error message to the user
+			alert("Error sending data to Rovr. Please check your connection.");
+		}
+	}, 30);
+</script>
+
+</html>
